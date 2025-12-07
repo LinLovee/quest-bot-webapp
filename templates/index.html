@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RuneQuestRPG Web App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #bbb;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .classes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .class-card {
+            background: linear-gradient(135deg, #2a2a3e 0%, #1a1a2e 100%);
+            border: 2px solid #444;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .class-card:hover {
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #3a3a4e 0%, #2a2a3e 100%);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .class-emoji {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .class-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .class-desc {
+            font-size: 0.8em;
+            color: #aaa;
+        }
+
+        .profile {
+            background: linear-gradient(135deg, #2a2a3e 0%, #1a1a2e 100%);
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .stat-label {
+            color: #bbb;
+            font-size: 0.9em;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .health-bar {
+            width: 100%;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .battle-screen {
+            text-align: center;
+        }
+
+        .battle-field {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 30px 0;
+            min-height: 150px;
+        }
+
+        .character {
+            font-size: 3em;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .damage-number {
+            position: fixed;
+            font-weight: bold;
+            font-size: 1.5em;
+            pointer-events: none;
+            color: #e74c3c;
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px) scale(1.2);
+            }
+        }
+
+        .crit {
+            color: #fff;
+            font-size: 2em;
+            text-shadow: 0 0 10px #e74c3c;
+        }
+
+        .battle-log {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+            min-height: 60px;
+            font-size: 0.9em;
+            color: #aaa;
+        }
+
+        button {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 8px;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #f07856 0%, #e74c3c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s forwards;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        .error-notification {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .classes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .character {
+                font-size: 2em;
+            }
+
+            .battle-field {
+                flex-direction: column;
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚔️ RuneQuestRPG</h1>
+        <p class="subtitle">Выбери свой путь в игре</p>
+
+        <!-- Экран выбора класса -->
+        <div id="classScreen" class="screen active">
+            <h2>Выбери класс персонажа</h2>
+            <div class="classes-grid" id="classesGrid"></div>
+        </div>
+
+        <!-- Экран профиля -->
+        <div id="profileScreen" class="screen">
+            <h2>👤 Профиль</h2>
+            <div class="profile" id="profileInfo"></div>
+            <div class="button-group">
+                <button onclick="goToBattle()">⚔️ Охота</button>
+                <button onclick="showClassScreen()">⬅️ Назад</button>
+            </div>
+        </div>
+
+        <!-- Экран боя -->
+        <div id="battleScreen" class="screen">
+            <h2>Ход боя</h2>
+            <div class="battle-field">
+                <div class="character" id="playerChar">🗡️</div>
+                <div class="character" id="enemyChar">👹</div>
+            </div>
+            <div class="battle-log" id="battleLog">Начало боя!</div>
+            <div class="button-group">
+                <button onclick="attack()">⚔️ Атаковать</button>
+                <button onclick="flee()">🏃 Сбежать</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '';
+        let currentPlayer = null;
+        let currentEnemy = null;
+        let gameState = 'class-selection';
+
+        async function loadClasses() {
+            try {
+                const response = await fetch(`${API_BASE}/api/classes`);
+                const classes = await response.json();
+                
+                const grid = document.getElementById('classesGrid');
+                grid.innerHTML = '';
+                
+                for (const [key, classData] of Object.entries(classes)) {
+                    const card = document.createElement('div');
+                    card.className = 'class-card';
+                    card.innerHTML = `
+                        <div class="class-emoji">${classData.emoji}</div>
+                        <div class="class-name">${classData.name}</div>
+                        <div class="class-desc">${classData.description}</div>
+                    `;
+                    card.onclick = () => createPlayer(key, classData);
+                    grid.appendChild(card);
+                }
+            } catch (error) {
+                showNotification('Ошибка загрузки классов', true);
+            }
+        }
+
+        async function createPlayer(className, classData) {
+            const userId = Date.now(); // Простой ID для тестирования
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        class: className
+                    })
+                });
+
+                if (!response.ok && response.status !== 409) {
+                    showNotification('Ошибка создания персонажа', true);
+                    return;
+                }
+
+                currentPlayer = {
+                    user_id: userId,
+                    class: className,
+                    name: classData.name,
+                    emoji: classData.emoji,
+                    level: 1,
+                    experience: 0,
+                    health: classData.health,
+                    max_health: classData.health,
+                    mana: classData.mana,
+                    attack: classData.attack,
+                    defense: classData.defense,
+                    gold: classData.starting_gold
+                };
+
+                showNotification(`🎮 ${classData.name} готов к бою!`);
+                showProfileScreen();
+            } catch (error) {
+                showNotification('Ошибка сети', true);
+            }
+        }
+
+        function updateProfileDisplay() {
+            if (!currentPlayer) return;
+
+            const healthPercent = (currentPlayer.health / currentPlayer.max_health) * 100;
+            const profile = document.getElementById('profileInfo');
+            
+            profile.innerHTML = `
+                <div class="stat">
+                    <span class="stat-label">⚔️ ${currentPlayer.name}</span>
+                    <span class="stat-value">Уровень ${currentPlayer.level}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">❤️ Здоровье</span>
+                    <span class="stat-value">${currentPlayer.health}/${currentPlayer.max_health}</span>
+                </div>
+                <div class="health-bar">
+                    <div class="health-fill" style="width: ${healthPercent}%"></div>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">💎 Мана</span>
+                    <span class="stat-value">${currentPlayer.mana}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">⚡ Атака</span>
+                    <span class="stat-value">${currentPlayer.attack}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">🛡️ Защита</span>
+                    <span class="stat-value">${currentPlayer.defense}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">💰 Золото</span>
+                    <span class="stat-value">${currentPlayer.gold}</span>
+                </div>
+            `;
+        }
+
+        async function loadEnemies() {
+            try {
+                const response = await fetch(`${API_BASE}/api/enemies`);
+                const enemies = await response.json();
+                const enemyKeys = Object.keys(enemies);
+                const randomKey = enemyKeys[Math.floor(Math.random() * enemyKeys.length)];
+                const enemyData = enemies[randomKey];
+                
+                currentEnemy = {
+                    name: enemyData.name,
+                    emoji: enemyData.emoji,
+                    health: enemyData.hp,
+                    max_health: enemyData.hp,
+                    attack: enemyData.damage
+                };
+            } catch (error) {
+                currentEnemy = {
+                    name: '👹 Случайный враг',
+                    emoji: '👹',
+                    health: 30,
+                    max_health: 30,
+                    attack: 8
+                };
+            }
+        }
+
+        function updateBattleDisplay() {
+            if (!currentPlayer || !currentEnemy) return;
+
+            document.getElementById('playerChar').textContent = currentPlayer.emoji;
+            document.getElementById('enemyChar').textContent = currentEnemy.emoji;
+        }
+
+        async function attack() {
+            if (!currentEnemy) return;
+
+            const damage = Math.floor(Math.random() * (currentPlayer.attack + 10)) + currentPlayer.attack / 2;
+            const isCrit = Math.random() < 0.2; // 20% шанс крита
+            const finalDamage = isCrit ? damage * 1.5 : damage;
+
+            currentEnemy.health -= finalDamage;
+
+            const log = document.getElementById('battleLog');
+            if (isCrit) {
+                log.innerHTML = `⚡ КРИТ! Ты нанес ${Math.floor(finalDamage)} урона!`;
+                showDamageNumber(Math.floor(finalDamage), true);
+            } else {
+                log.innerHTML = `Ты нанес ${Math.floor(finalDamage)} урона!`;
+                showDamageNumber(Math.floor(finalDamage), false);
+            }
+
+            if (currentEnemy.health <= 0) {
+                log.innerHTML = `🎉 Ты победил ${currentEnemy.name}! Получено 100 золота!`;
+                currentPlayer.gold += 100;
+                currentPlayer.experience += 50;
+                showNotification('💰 Победа!');
+                setTimeout(() => goToProfile(), 2000);
+                return;
+            }
+
+            setTimeout(() => enemyAttack(), 1000);
+        }
+
+        function enemyAttack() {
+            if (!currentEnemy || currentEnemy.health <= 0) return;
+
+            const damage = Math.floor(Math.random() * (currentEnemy.attack + 5)) + currentEnemy.attack / 2;
+            currentPlayer.health -= damage;
+
+            const log = document.getElementById('battleLog');
+            log.innerHTML = `${currentEnemy.name} нанес ${Math.floor(damage)} урона!`;
+
+            if (currentPlayer.health <= 0) {
+                log.innerHTML = `💀 ${currentEnemy.name} тебя победил...`;
+                currentPlayer.health = currentPlayer.max_health;
+                showNotification('Ты повержен...', true);
+                setTimeout(() => goToProfile(), 2000);
+                return;
+            }
+
+            updateBattleDisplay();
+        }
+
+        function flee() {
+            const success = Math.random() > 0.3;
+            const log = document.getElementById('battleLog');
+            
+            if (success) {
+                log.innerHTML = '🏃 Ты успешно убежал!';
+                showNotification('Удачный побег');
+                setTimeout(() => goToProfile(), 1500);
+            } else {
+                log.innerHTML = '❌ Не получилось убежать!';
+                setTimeout(() => enemyAttack(), 800);
+            }
+        }
+
+        function showDamageNumber(damage, isCrit) {
+            const div = document.createElement('div');
+            div.className = `damage-number ${isCrit ? 'crit' : ''}`;
+            div.textContent = isCrit ? `⚡${Math.floor(damage)}` : damage;
+            div.style.left = '50%';
+            div.style.top = '50%';
+            div.style.transform = 'translate(-50%, -50%)';
+            document.body.appendChild(div);
+            
+            setTimeout(() => div.remove(), 1000);
+        }
+
+        function showNotification(message, isError = false) {
+            const notif = document.createElement('div');
+            notif.className = `notification ${isError ? 'error-notification' : ''}`;
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            
+            setTimeout(() => notif.remove(), 3000);
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showClassScreen() {
+            showScreen('classScreen');
+        }
+
+        function showProfileScreen() {
+            updateProfileDisplay();
+            showScreen('profileScreen');
+        }
+
+        function goToProfile() {
+            updateProfileDisplay();
+            showScreen('profileScreen');
+        }
+
+        function goToBattle() {
+            loadEnemies();
+            updateBattleDisplay();
+            showScreen('battleScreen');
+        }
+
+        // Инициализация
+        loadClasses();
+    </script>
+</body>
+</html>
