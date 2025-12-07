@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RuneQuestRPG Web App</title>
+    <title>RuneQuestRPG v2.0</title>
     <style>
         * {
             margin: 0;
@@ -20,7 +20,6 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            overflow-x: hidden;
         }
 
         .container {
@@ -30,54 +29,14 @@
             border-radius: 15px;
             padding: 30px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 30px rgba(231, 76, 60, 0.2);
-            animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: 2px solid rgba(231, 76, 60, 0.3);
+            animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         @keyframes slideDown {
             from {
                 opacity: 0;
-                transform: translateY(-80px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 5px;
-            font-size: 2.5em;
-            background: linear-gradient(135deg, #e74c3c, #f39c12, #e74c3c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: titleGlow 2s ease-in-out infinite;
-            text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
-        }
-
-        @keyframes titleGlow {
-            0%, 100% {
-                filter: drop-shadow(0 0 8px rgba(231, 76, 60, 0.5));
-            }
-            50% {
-                filter: drop-shadow(0 0 15px rgba(231, 76, 60, 0.8));
-            }
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #bbb;
-            margin-bottom: 30px;
-            font-size: 0.9em;
-            animation: fadeInUp 0.8s ease 0.2s both;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(-80px);
             }
             to {
                 opacity: 1;
@@ -85,56 +44,41 @@
             }
         }
 
+        h1 {
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #e74c3c, #f39c12);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(231, 76, 60, 0.5)); }
+            50% { filter: drop-shadow(0 0 15px rgba(231, 76, 60, 0.8)); }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #bbb;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
         .screen {
             display: none;
-            animation: fadeInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .screen.active {
             display: block;
+            animation: fadeIn 0.4s ease;
         }
 
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .header-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 8px 12px;
-            background: rgba(100, 100, 150, 0.3);
-            border: 2px solid transparent;
-            color: #aaa;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            font-size: 0.9em;
-            font-weight: bold;
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            border-color: #f39c12;
-            color: white;
-            box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
-        }
-
-        .tab-btn:hover {
-            border-color: #e74c3c;
-            transform: translateY(-2px);
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .classes-grid {
@@ -145,60 +89,30 @@
         }
 
         .class-card {
-            background: linear-gradient(135deg, rgba(50, 50, 80, 0.8) 0%, rgba(30, 30, 60, 0.8) 100%);
+            background: linear-gradient(135deg, rgba(50, 50, 80, 0.8), rgba(30, 30, 60, 0.8));
             border: 2px solid rgba(100, 100, 150, 0.5);
             border-radius: 12px;
             padding: 15px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s ease;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .class-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(231, 76, 60, 0.2) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
 
         .class-card:hover {
             border-color: #e74c3c;
-            background: linear-gradient(135deg, rgba(70, 70, 120, 1) 0%, rgba(50, 50, 90, 1) 100%);
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4), inset 0 0 20px rgba(231, 76, 60, 0.1);
-        }
-
-        .class-card:hover::before {
-            opacity: 1;
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
         }
 
         .class-emoji {
             font-size: 3em;
             margin-bottom: 10px;
-            animation: bounce 0.6s ease-in-out;
-        }
-
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0) rotateZ(0deg);
-            }
-            50% {
-                transform: translateY(-10px) rotateZ(5deg);
-            }
         }
 
         .class-name {
             font-weight: bold;
-            font-size: 1.1em;
-            margin-bottom: 5px;
             color: #e74c3c;
+            margin-bottom: 5px;
         }
 
         .class-desc {
@@ -207,12 +121,11 @@
         }
 
         .profile {
-            background: linear-gradient(135deg, rgba(50, 30, 30, 0.8) 0%, rgba(30, 20, 20, 0.8) 100%);
+            background: linear-gradient(135deg, rgba(50, 30, 30, 0.8), rgba(30, 20, 20, 0.8));
             border: 2px solid #e74c3c;
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: inset 0 0 20px rgba(231, 76, 60, 0.1);
         }
 
         .stat {
@@ -220,25 +133,6 @@
             justify-content: space-between;
             margin-bottom: 12px;
             align-items: center;
-            animation: slideInLeft 0.5s ease backwards;
-        }
-
-        .stat:nth-child(1) { animation-delay: 0s; }
-        .stat:nth-child(2) { animation-delay: 0.1s; }
-        .stat:nth-child(3) { animation-delay: 0.2s; }
-        .stat:nth-child(4) { animation-delay: 0.3s; }
-        .stat:nth-child(5) { animation-delay: 0.4s; }
-        .stat:nth-child(6) { animation-delay: 0.5s; }
-
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
         }
 
         .stat-label {
@@ -249,7 +143,6 @@
         .stat-value {
             font-weight: bold;
             color: #f39c12;
-            font-size: 1.1em;
         }
 
         .health-bar {
@@ -260,36 +153,13 @@
             overflow: hidden;
             margin-top: 8px;
             border: 2px solid rgba(100, 50, 50, 0.5);
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
         .health-fill {
             height: 100%;
             background: linear-gradient(90deg, #e74c3c, #e67e22);
-            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: width 0.5s ease;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(231, 76, 60, 0.8), inset 0 0 5px rgba(255, 255, 255, 0.3);
-            position: relative;
-        }
-
-        .health-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shine 2s infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .battle-screen {
-            text-align: center;
         }
 
         .battle-field {
@@ -298,22 +168,16 @@
             align-items: center;
             margin: 40px 0;
             min-height: 180px;
-            position: relative;
         }
 
         .character {
             font-size: 4em;
             animation: breathe 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 10px rgba(231, 76, 60, 0.5));
         }
 
         @keyframes breathe {
-            0%, 100% {
-                transform: scale(1) rotate(0deg);
-            }
-            50% {
-                transform: scale(1.08) rotate(1deg);
-            }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
         }
 
         .damage-number {
@@ -322,44 +186,13 @@
             font-size: 2em;
             pointer-events: none;
             color: #e74c3c;
-            animation: floatUpBig 1.2s ease-out forwards;
+            animation: floatUp 1.2s ease-out forwards;
             text-shadow: 0 0 10px rgba(231, 76, 60, 0.8);
-            font-family: 'Arial Black';
         }
 
-        @keyframes floatUpBig {
-            0% {
-                opacity: 1;
-                transform: translateY(0) scale(1) rotate(0deg);
-            }
-            50% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-100px) scale(1.5) rotate(15deg);
-            }
-        }
-
-        .crit {
-            color: #fff;
-            font-size: 2.5em;
-            text-shadow: 0 0 15px #e74c3c, 0 0 30px #f39c12;
-            animation: critPulse 0.6s ease;
-        }
-
-        @keyframes critPulse {
-            0% {
-                transform: scale(0.5) rotate(-30deg);
-                opacity: 0;
-            }
-            50% {
-                transform: scale(1.3) rotate(10deg);
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100px) scale(1.5); }
         }
 
         .battle-log {
@@ -371,105 +204,49 @@
             min-height: 70px;
             font-size: 0.95em;
             color: #e67e22;
-            animation: logAppear 0.4s ease;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
-        @keyframes logAppear {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .shop-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .item-card {
-            background: linear-gradient(135deg, rgba(50, 50, 80, 0.8) 0%, rgba(30, 30, 60, 0.8) 100%);
-            border: 2px solid rgba(100, 150, 200, 0.5);
-            border-radius: 10px;
-            padding: 12px;
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: rgba(100, 100, 150, 0.3);
+            border: 2px solid transparent;
+            color: #aaa;
             cursor: pointer;
+            border-radius: 5px;
             transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .item-card:hover {
-            border-color: #3498db;
-            background: linear-gradient(135deg, rgba(70, 70, 120, 1) 0%, rgba(50, 50, 90, 1) 100%);
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
-        }
-
-        .item-emoji {
-            font-size: 2.5em;
-            margin-bottom: 8px;
-        }
-
-        .item-name {
+            margin-bottom: 10px;
             font-weight: bold;
-            font-size: 0.9em;
-            color: #3498db;
-            margin-bottom: 5px;
         }
 
-        .item-price {
-            font-size: 0.85em;
-            color: #f39c12;
+        .tab-btn.active {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-color: #f39c12;
+            color: white;
         }
 
         button {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
             border: none;
             padding: 13px 22px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s ease;
             margin: 8px;
             font-size: 1em;
-            position: relative;
-            overflow: hidden;
             box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
         }
 
-        button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        button:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
         button:hover {
-            background: linear-gradient(135deg, #f07856 0%, #e74c3c 100%);
             transform: translateY(-3px);
             box-shadow: 0 7px 25px rgba(231, 76, 60, 0.6);
         }
 
-        button:active {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 10px rgba(231, 76, 60, 0.4);
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .button-group {
@@ -483,80 +260,70 @@
             position: fixed;
             bottom: 30px;
             right: 20px;
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            background: linear-gradient(135deg, #27ae60, #229954);
             color: white;
             padding: 16px 22px;
             border-radius: 8px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-            animation: slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), slideOutRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 2.6s forwards;
+            animation: slideIn 0.4s ease, slideOut 0.4s ease 2.6s forwards;
             z-index: 1000;
-            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
-        @keyframes slideInRight {
-            from {
-                transform: translateX(400px) rotate(10deg);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0) rotate(0deg);
-                opacity: 1;
-            }
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
-        @keyframes slideOutRight {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(400px) rotate(-10deg);
-                opacity: 0;
-            }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(400px); opacity: 0; }
         }
 
         .error-notification {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
         }
 
-        .leaderboard {
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(243, 156, 18, 0.5);
-            border-radius: 8px;
-            padding: 15px;
+        .shop-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
             margin-bottom: 20px;
         }
 
-        .leaderboard-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid rgba(100, 100, 150, 0.3);
-            animation: slideInLeft 0.5s ease backwards;
+        .item-card {
+            background: linear-gradient(135deg, rgba(50, 50, 80, 0.8), rgba(30, 30, 60, 0.8));
+            border: 2px solid rgba(100, 150, 200, 0.5);
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
         }
 
-        .leaderboard-item:last-child {
-            border-bottom: none;
+        .item-card:hover {
+            border-color: #3498db;
+            transform: translateY(-5px);
         }
 
-        .leaderboard-rank {
+        .item-emoji {
+            font-size: 2.5em;
+            margin-bottom: 8px;
+        }
+
+        .item-name {
             font-weight: bold;
-            color: #f39c12;
-            min-width: 30px;
-        }
-
-        .leaderboard-info {
-            flex: 1;
-            margin: 0 10px;
-        }
-
-        .leaderboard-name {
-            color: #aaa;
+            color: #3498db;
             font-size: 0.9em;
+            margin-bottom: 5px;
         }
 
-        .leaderboard-stats {
+        .item-price {
+            color: #f39c12;
+            font-size: 0.85em;
+        }
+
+        .cooldown-text {
             color: #e74c3c;
+            font-size: 0.85em;
             font-weight: bold;
         }
 
@@ -565,22 +332,11 @@
                 padding: 20px;
                 max-width: 100%;
             }
-
             h1 {
                 font-size: 1.8em;
             }
-
             .classes-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .character {
-                font-size: 2.5em;
-            }
-
-            .battle-field {
-                flex-direction: column;
-                gap: 40px;
             }
         }
     </style>
@@ -588,77 +344,68 @@
 <body>
     <div class="container">
         <h1>⚔️ RuneQuestRPG</h1>
-        <p class="subtitle">🎮 Эпическая ролевая игра</p>
+        <p class="subtitle">🎮 Эпическая RPG</p>
 
-        <!-- Экран выбора класса -->
+        <!-- Выбор класса -->
         <div id="classScreen" class="screen active">
-            <h2>👤 Выбери класс персонажа</h2>
+            <h2>👤 Выбери класс</h2>
             <div class="classes-grid" id="classesGrid"></div>
         </div>
 
-        <!-- Экран профиля -->
+        <!-- Профиль -->
         <div id="profileScreen" class="screen">
-            <div class="header-tabs">
-                <button class="tab-btn active" onclick="showTab('profile')">👤 Профиль</button>
-                <button class="tab-btn" onclick="showTab('battle')">⚔️ Бой</button>
-                <button class="tab-btn" onclick="showTab('shop')">🏪 Магазин</button>
-                <button class="tab-btn" onclick="showTab('rating')">🏆 Птинг</button>
-            </div>
+            <div class="profile" id="profileInfo"></div>
             
-            <!-- Таб профиля -->
-            <div id="profileTab" class="tab-content">
-                <div class="profile" id="profileInfo"></div>
+            <div style="margin-bottom: 15px;">
+                <button class="tab-btn active" onclick="switchTab('battle')" style="margin: 0; flex: 1;">⚔️ Баттл</button>
+                <button class="tab-btn" onclick="switchTab('shop')" style="margin: 0; flex: 1;">🎏 Магазин</button>
+            </div>
+
+            <div id="battleTab">
                 <div class="button-group">
-                    <button onclick="goToBattle()">⚔️ Начать бой</button>
-                    <button onclick="showClassScreen()">⬅️ Назад</button>
+                    <button onclick="goToBattle()" style="flex: 1;">⚔️ Гнты</button>
+                    <button onclick="showClassScreen()" style="flex: 1;">⬅️ Назад</button>
                 </div>
             </div>
 
-            <!-- Таб магазина -->
-            <div id="shopTab" class="tab-content" style="display:none;">
-                <h3>🎏 Магазин товаров</h3>
+            <div id="shopTab" style="display: none;">
+                <h3>🎏 Магазин</h3>
                 <div class="shop-grid" id="shopGrid"></div>
-            </div>
-
-            <!-- Таб рейтинга -->
-            <div id="ratingTab" class="tab-content" style="display:none;">
-                <h3>🏆 Лучшие игроки</h3>
-                <div class="leaderboard" id="leaderboard"></div>
             </div>
         </div>
 
-        <!-- Экран боя -->
+        <!-- Баттл -->
         <div id="battleScreen" class="screen">
-            <h2>⚔️ СРАЖЕНИЕ</h2>
+            <h2>⚔️ БОЙ</h2>
             <div class="battle-field">
                 <div>
                     <div class="character" id="playerChar">🗡️</div>
-                    <div style="color: #aaa; font-size: 0.9em; margin-top: 10px;"><span id="playerName">Герой</span></div>
+                    <small style="color: #aaa;">Ty</small>
                 </div>
                 <div style="color: #999; font-size: 2em;">⚡</div>
                 <div>
                     <div class="character" id="enemyChar">👹</div>
-                    <div style="color: #aaa; font-size: 0.9em; margin-top: 10px;"><span id="enemyName">Враг</span></div>
+                    <small style="color: #aaa;" id="enemyName">Враг</small>
                 </div>
             </div>
-            <div class="battle-log" id="battleLog">Загружаюсь враг...</div>
+            <div class="battle-log" id="battleLog">Начало боя...</div>
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                 <div style="flex: 1;">
-                    <small style="color: #aaa;">Мое здоровье</small>
+                    <small style="color: #aaa;">Мое HP</small>
                     <div class="health-bar">
                         <div class="health-fill" id="playerHPBar" style="width: 100%"></div>
                     </div>
                 </div>
                 <div style="flex: 1;">
-                    <small style="color: #aaa;">Враг</small>
+                    <small style="color: #aaa;">Враг HP</small>
                     <div class="health-bar">
                         <div class="health-fill" id="enemyHPBar" style="width: 100%; background: linear-gradient(90deg, #3498db, #2980b9);"></div>
                     </div>
                 </div>
             </div>
             <div class="button-group">
-                <button onclick="attack()" style="flex: 1;">⚔️ Атаковать</button>
-                <button onclick="useSkill()" style="flex: 1;">✨ Навык</button>
+                <button onclick="normalAttack()" style="flex: 1;">⚔️ Атака</button>
+                <button id="skillBtn" onclick="useSkill()" style="flex: 1;">✨ Навык</button>
                 <button onclick="flee()" style="flex: 1;">🏃 Сбежать</button>
             </div>
         </div>
@@ -668,8 +415,8 @@
         const API_BASE = '';
         let currentPlayer = null;
         let currentEnemy = null;
-        let gameState = 'class-selection';
-        let battleStats = { damage: 0, kills: 0, startHealth: 0 };
+        let currentEnemyData = null;
+        let playerUserId = null;
 
         async function loadClasses() {
             try {
@@ -688,23 +435,89 @@
                         <div class="class-desc">${classData.description}</div>
                         <small style="color: #f39c12; margin-top: 8px; display: block;">❤️ ${classData.health} | ⚡ ${classData.attack}</small>
                     `;
-                    card.onclick = () => createPlayer(key, classData);
+                    card.onclick = () => createPlayer(key);
                     grid.appendChild(card);
                 }
             } catch (error) {
-                showNotification('Ошибка загрузки классов', true);
+                showNotification('Ошибка загрузки', true);
             }
         }
 
-        async function loadItems() {
+        async function createPlayer(className) {
+            playerUserId = Date.now();
+            
             try {
-                const response = await fetch(`${API_BASE}/api/items`);
-                const items = await response.json();
+                const response = await fetch(`${API_BASE}/api/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: playerUserId,
+                        class: className
+                    })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    showNotification('Ошибка', true);
+                    return;
+                }
+
+                currentPlayer = data.player;
+                showNotification(`🎮 ${currentPlayer.class} готов!`);
+                showProfileScreen();
+            } catch (error) {
+                showNotification('Ошибка системы', true);
+            }
+        }
+
+        function updateProfileDisplay() {
+            if (!currentPlayer) return;
+
+            const healthPercent = (currentPlayer.health / currentPlayer.max_health) * 100;
+            const profile = document.getElementById('profileInfo');
+            
+            profile.innerHTML = `
+                <div class="stat">
+                    <span class="stat-label">🗡️ ${currentPlayer.class}</span>
+                    <span class="stat-value">Lvl.${currentPlayer.level}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">❤️ HP</span>
+                    <span class="stat-value">${currentPlayer.health}/${currentPlayer.max_health}</span>
+                </div>
+                <div class="health-bar">
+                    <div class="health-fill" style="width: ${healthPercent}%"></div>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">💎 Mana</span>
+                    <span class="stat-value">${currentPlayer.mana}/${currentPlayer.max_mana}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">+Attack</span>
+                    <span class="stat-value">${currentPlayer.attack}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">+Defense</span>
+                    <span class="stat-value">${currentPlayer.defense}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">💰 Gold</span>
+                    <span class="stat-value">${currentPlayer.gold}</span>
+                </div>
+            `;
+        }
+
+        async function loadShop() {
+            if (!playerUserId) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/items?user_id=${playerUserId}`);
+                const data = await response.json();
                 
                 const grid = document.getElementById('shopGrid');
                 grid.innerHTML = '';
                 
-                for (const [key, item] of Object.entries(items)) {
+                data.items.forEach(item => {
                     const card = document.createElement('div');
                     card.className = 'item-card';
                     card.innerHTML = `
@@ -714,301 +527,168 @@
                     `;
                     card.onclick = () => buyItem(item.name, item.price);
                     grid.appendChild(card);
-                }
-            } catch (error) {
-                console.error('Error loading items:', error);
-            }
-        }
-
-        async function loadLeaderboard() {
-            try {
-                const response = await fetch(`${API_BASE}/api/leaderboard`);
-                const leaders = await response.json();
-                
-                const board = document.getElementById('leaderboard');
-                board.innerHTML = '';
-                
-                leaders.slice(0, 10).forEach((player, index) => {
-                    const item = document.createElement('div');
-                    item.className = 'leaderboard-item';
-                    item.innerHTML = `
-                        <div class="leaderboard-rank">#${index + 1}</div>
-                        <div class="leaderboard-info">
-                            <div class="leaderboard-name">👤 ${CLASSES[player.class]?.name || 'Unknown'} Lvl.${player.level}</div>
-                        </div>
-                        <div class="leaderboard-stats">💰 ${player.gold} | ⚔️ ${player.total_kills}</div>
-                    `;
-                    board.appendChild(item);
                 });
             } catch (error) {
-                console.error('Error loading leaderboard:', error);
+                console.error('Ошибка:', error);
             }
-        }
-
-        let CLASSES = {};
-        fetch(`${API_BASE}/api/classes`).then(r => r.json()).then(d => CLASSES = d);
-
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            
-            if (tabName === 'profile') document.getElementById('profileTab').style.display = 'block';
-            else if (tabName === 'shop') {
-                document.getElementById('shopTab').style.display = 'block';
-                loadItems();
-            }
-            else if (tabName === 'battle') {
-                document.getElementById('profileTab').style.display = 'block';
-                goToBattle();
-            }
-            else if (tabName === 'rating') {
-                document.getElementById('ratingTab').style.display = 'block';
-                loadLeaderboard();
-            }
-            
-            event.target.classList.add('active');
-        }
-
-        async function createPlayer(className, classData) {
-            const userId = Date.now();
-            
-            try {
-                await fetch(`${API_BASE}/api/create`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user_id: userId, class: className })
-                });
-
-                currentPlayer = {
-                    user_id: userId,
-                    class: className,
-                    name: classData.name,
-                    emoji: classData.emoji,
-                    level: 1,
-                    experience: 0,
-                    health: classData.health,
-                    max_health: classData.health,
-                    mana: classData.mana,
-                    max_mana: classData.mana,
-                    attack: classData.attack,
-                    defense: classData.defense,
-                    gold: classData.starting_gold,
-                    special_skill: classData.special_skill
-                };
-
-                showNotification(`🎮 ${classData.name} готов к адвентуре!`);
-                showProfileScreen();
-            } catch (error) {
-                showNotification('Ошибка создания', true);
-            }
-        }
-
-        function updateProfileDisplay() {
-            if (!currentPlayer) return;
-
-            const healthPercent = (currentPlayer.health / currentPlayer.max_health) * 100;
-            const manaPercent = (currentPlayer.mana / currentPlayer.max_mana) * 100;
-            
-            const profile = document.getElementById('profileInfo');
-            profile.innerHTML = `
-                <div class="stat">
-                    <span class="stat-label">🗡️ ${currentPlayer.name}</span>
-                    <span class="stat-value">Уровень ${currentPlayer.level}</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">❤️ Здоровье</span>
-                    <span class="stat-value">${currentPlayer.health}/${currentPlayer.max_health}</span>
-                </div>
-                <div class="health-bar">
-                    <div class="health-fill" style="width: ${healthPercent}%"></div>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">💎 Мана</span>
-                    <span class="stat-value">${currentPlayer.mana}/${currentPlayer.max_mana}</span>
-                </div>
-                <div class="health-bar">
-                    <div class="health-fill" style="width: ${manaPercent}%; background: linear-gradient(90deg, #3498db, #2980b9);"></div>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">⚡ Атака</span>
-                    <span class="stat-value">${currentPlayer.attack}</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">🛡️ Защита</span>
-                    <span class="stat-value">${currentPlayer.defense}</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">💰 Золото</span>
-                    <span class="stat-value">${currentPlayer.gold}</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">⭐ Опыт</span>
-                    <span class="stat-value">${currentPlayer.experience}</span>
-                </div>
-            `;
         }
 
         async function loadEnemies() {
             try {
                 const response = await fetch(`${API_BASE}/api/enemies`);
                 const enemies = await response.json();
-                const enemyKeys = Object.keys(enemies);
-                const randomKey = enemyKeys[Math.floor(Math.random() * enemyKeys.length)];
-                const enemyData = enemies[randomKey];
-                
+                const keys = Object.keys(enemies);
+                const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                currentEnemyData = enemies[randomKey];
                 currentEnemy = {
-                    name: enemyData.name,
-                    emoji: enemyData.emoji,
-                    health: enemyData.hp,
-                    max_health: enemyData.hp,
-                    attack: enemyData.damage,
-                    gold: enemyData.gold,
-                    exp: enemyData.exp
+                    health: currentEnemyData.hp,
+                    max_health: currentEnemyData.hp
                 };
             } catch (error) {
-                currentEnemy = {
-                    name: '👹 Монстр',
-                    emoji: '👹',
-                    health: 30,
-                    max_health: 30,
-                    attack: 8,
-                    gold: 50,
-                    exp: 30
-                };
+                currentEnemyData = {name: "Монстр", emoji: "👹", hp: 30, damage: 8};
+                currentEnemy = {health: 30, max_health: 30};
             }
         }
 
         function updateBattleDisplay() {
-            if (!currentPlayer || !currentEnemy) return;
+            if (!currentPlayer || !currentEnemy || !currentEnemyData) return;
 
-            document.getElementById('playerChar').textContent = currentPlayer.emoji;
-            document.getElementById('playerName').textContent = currentPlayer.name;
-            document.getElementById('enemyChar').textContent = currentEnemy.emoji;
-            document.getElementById('enemyName').textContent = currentEnemy.name;
+            document.getElementById('playerChar').textContent = '🧙';
+            document.getElementById('enemyChar').textContent = currentEnemyData.emoji;
+            document.getElementById('enemyName').textContent = currentEnemyData.name;
             
-            const playerHPPercent = (currentPlayer.health / currentPlayer.max_health) * 100;
-            const enemyHPPercent = (currentEnemy.health / currentEnemy.max_health) * 100;
+            const playerHPPercent = Math.max(0, (currentPlayer.health / currentPlayer.max_health) * 100);
+            const enemyHPPercent = Math.max(0, (currentEnemy.health / currentEnemy.max_health) * 100);
             
             document.getElementById('playerHPBar').style.width = playerHPPercent + '%';
             document.getElementById('enemyHPBar').style.width = enemyHPPercent + '%';
-        }
-
-        async function attack() {
-            if (!currentEnemy) return;
-
-            const baseDamage = currentPlayer.attack + Math.random() * 10;
-            const isCrit = Math.random() < (currentPlayer.attack * 0.01);
-            const finalDamage = isCrit ? baseDamage * 1.8 : baseDamage;
-
-            currentEnemy.health -= finalDamage;
-            battleStats.damage += finalDamage;
-
-            const log = document.getElementById('battleLog');
-            if (isCrit) {
-                log.innerHTML = `⚡ **КРИТИЧНИЙ УДАР!** Ты нанес ${Math.floor(finalDamage)} урона!`;
-                showDamageNumber(Math.floor(finalDamage), true);
-            } else {
-                log.innerHTML = `⚔️ Ты нанес ${Math.floor(finalDamage)} урона`;
-                showDamageNumber(Math.floor(finalDamage), false);
-            }
-
-            updateBattleDisplay();
-
-            if (currentEnemy.health <= 0) {
-                currentPlayer.gold += currentEnemy.gold;
-                currentPlayer.experience += currentEnemy.exp;
-                battleStats.kills += 1;
-                log.innerHTML = `🎉 **ПОБЕДА!** Ты победил ${currentEnemy.name}! +${currentEnemy.gold} 💰 +${currentEnemy.exp} ★`;
-                showNotification(`💰 +${currentEnemy.gold} | ★ +${currentEnemy.exp}`);
-                setTimeout(() => goToProfile(), 2500);
-                return;
-            }
-
-            setTimeout(() => enemyAttack(), 1200);
-        }
-
-        function useSkill() {
-            if (currentPlayer.mana < 20) {
-                showNotification('Нехватает маны', true);
-                return;
-            }
             
-            currentPlayer.mana -= 20;
-            const skillDamage = currentPlayer.attack * 1.5 + Math.random() * 15;
-            currentEnemy.health -= skillDamage;
-            battleStats.damage += skillDamage;
+            updateSkillButton();
+        }
 
-            const log = document.getElementById('battleLog');
-            log.innerHTML = `✨ ${currentPlayer.special_skill}! Нанесено ${Math.floor(skillDamage)} урона!`;
-            showDamageNumber(Math.floor(skillDamage), true);
-            updateBattleDisplay();
+        async function normalAttack() {
+            try {
+                const response = await fetch(`${API_BASE}/api/attack`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: playerUserId,
+                        is_skill: false
+                    })
+                });
 
-            if (currentEnemy.health <= 0) {
-                currentPlayer.gold += currentEnemy.gold * 1.5;
-                currentPlayer.experience += currentEnemy.exp * 1.2;
-                battleStats.kills += 1;
-                log.innerHTML = `🌟 **Образцовая атака!** Ты оснащil ${currentEnemy.name}!`;
-                showNotification(`🌟 Бонус к луту!`);
-                setTimeout(() => goToProfile(), 2500);
-                return;
+                const data = await response.json();
+                const damage = data.damage;
+                const isCrit = data.is_crit;
+
+                currentEnemy.health -= damage;
+                currentPlayer.mana = data.remaining_mana;
+
+                const log = document.getElementById('battleLog');
+                log.innerHTML = isCrit ? `⚡ КРИТ! ${damage} урона!` : `Атака: ${damage} урона`;
+                showDamageNumber(damage, isCrit);
+                updateBattleDisplay();
+
+                if (currentEnemy.health <= 0) {
+                    finishBattle(true);
+                } else {
+                    setTimeout(enemyAttack, 1200);
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
             }
+        }
 
-            setTimeout(() => enemyAttack(), 1200);
+        async function useSkill() {
+            try {
+                const response = await fetch(`${API_BASE}/api/attack`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: playerUserId,
+                        is_skill: true
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    showNotification(data.error, true);
+                    return;
+                }
+
+                const damage = data.damage;
+                currentEnemy.health -= damage;
+                currentPlayer.mana = data.remaining_mana;
+
+                const log = document.getElementById('battleLog');
+                log.innerHTML = `✨ НАВЫК! ${damage} урона!`;
+                showDamageNumber(damage, true);
+                updateBattleDisplay();
+
+                if (currentEnemy.health <= 0) {
+                    finishBattle(true);
+                } else {
+                    setTimeout(enemyAttack, 1200);
+                }
+            } catch (error) {
+                showNotification('Ошибка', true);
+            }
         }
 
         function enemyAttack() {
             if (!currentEnemy || currentEnemy.health <= 0) return;
 
-            const damage = currentEnemy.attack + Math.random() * 8 - currentPlayer.defense * 0.5;
-            const actualDamage = Math.max(1, damage);
-            currentPlayer.health -= actualDamage;
+            const damage = Math.max(1, currentEnemyData.damage - currentPlayer.defense / 2);
+            currentPlayer.health -= damage;
 
             const log = document.getElementById('battleLog');
-            log.innerHTML = `🐥 ${currentEnemy.name} нанес ${Math.floor(actualDamage)} урона!`;
-
+            log.innerHTML = `${currentEnemyData.name} наносит ${damage} урона!`;
             updateBattleDisplay();
 
             if (currentPlayer.health <= 0) {
                 currentPlayer.health = currentPlayer.max_health;
-                log.innerHTML = `💀 Ты побежден! Возвращение в град...`;
-                currentPlayer.gold = Math.max(0, currentPlayer.gold - 10);
-                showNotification('Ты отражен!', true);
-                setTimeout(() => goToProfile(), 2500);
-                return;
+                finishBattle(false);
             }
         }
 
         function flee() {
-            const success = Math.random() > 0.25;
+            const success = Math.random() > 0.3;
             const log = document.getElementById('battleLog');
             
             if (success) {
-                log.innerHTML = '🏃 Ты сниваешь!💫';
-                showNotification('Удачный побег!');
-                setTimeout(() => goToProfile(), 1500);
+                log.innerHTML = '🏃 Успешный побег!';
+                showNotification('Удалось убежать!');
+                setTimeout(goToProfile, 1500);
             } else {
-                log.innerHTML = '❌ Не получилось убежать!';
-                setTimeout(() => enemyAttack(), 800);
+                log.innerHTML = '❌ Не удалось убежать!';
+                setTimeout(enemyAttack, 800);
             }
         }
 
-        function buyItem(name, price) {
-            if (currentPlayer.gold < price) {
-                showNotification('Нехватает золота', true);
-                return;
+        function finishBattle(won) {
+            const log = document.getElementById('battleLog');
+            if (won) {
+                log.innerHTML = `🎉 ПОБЕДА! +${currentEnemyData.gold} золота`;
+                currentPlayer.gold += currentEnemyData.gold;
+                currentPlayer.experience += currentEnemyData.exp;
+                currentPlayer.total_kills += 1;
+                showNotification('💰 Победа!');
+            } else {
+                log.innerHTML = '☠️ Поражение... Возврат в город';
+                showNotification('Поражение...', true);
             }
-            currentPlayer.gold -= price;
-            showNotification(`💰 Куплен ${name}!`);
-            updateProfileDisplay();
+            setTimeout(goToProfile, 2500);
         }
 
         function showDamageNumber(damage, isCrit) {
             const div = document.createElement('div');
-            div.className = `damage-number ${isCrit ? 'crit' : ''}`;
+            div.className = 'damage-number';
             div.textContent = isCrit ? `⚡${damage}` : damage;
             div.style.left = (window.innerWidth / 2) + 'px';
             div.style.top = (window.innerHeight / 2) + 'px';
             div.style.transform = 'translate(-50%, -50%)';
+            if (isCrit) div.style.fontSize = '2.5em';
             document.body.appendChild(div);
             
             setTimeout(() => div.remove(), 1200);
@@ -1023,6 +703,45 @@
             setTimeout(() => notif.remove(), 3000);
         }
 
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            
+            if (tab === 'battle') {
+                document.getElementById('battleTab').style.display = 'block';
+                document.getElementById('shopTab').style.display = 'none';
+            } else {
+                document.getElementById('battleTab').style.display = 'none';
+                document.getElementById('shopTab').style.display = 'block';
+                loadShop();
+            }
+        }
+
+        function buyItem(name, price) {
+            if (currentPlayer.gold < price) {
+                showNotification('Недостаточно золота', true);
+                return;
+            }
+            currentPlayer.gold -= price;
+            showNotification(`🎁 Куплен: ${name}!`);
+            updateProfileDisplay();
+        }
+
+        function updateSkillButton() {
+            const btn = document.getElementById('skillBtn');
+            const cooldownRemaining = currentPlayer.skill_cooldown_remaining || 0;
+            
+            if (cooldownRemaining > 0) {
+                btn.disabled = true;
+                btn.innerHTML = `⏱️ ${cooldownRemaining}s`;
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = '✨ Навык';
+            }
+        }
+
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -1035,17 +754,22 @@
         function showProfileScreen() {
             updateProfileDisplay();
             showScreen('profileScreen');
-            document.getElementById('profileTab').style.display = 'block';
+            document.getElementById('battleTab').style.display = 'block';
             document.getElementById('shopTab').style.display = 'none';
-            document.getElementById('ratingTab').style.display = 'none';
         }
 
         function goToProfile() {
-            updateProfileDisplay();
-            showScreen('profileScreen');
-            document.getElementById('profileTab').style.display = 'block';
-            document.getElementById('shopTab').style.display = 'none';
-            document.getElementById('ratingTab').style.display = 'none';
+            // Перезагрузи данные игрока
+            if (!playerUserId) return;
+            
+            fetch(`${API_BASE}/api/player?user_id=${playerUserId}`)
+                .then(r => r.json())
+                .then(data => {
+                    currentPlayer = data;
+                    updateProfileDisplay();
+                    showProfileScreen();
+                })
+                .catch(e => console.error(e));
         }
 
         function goToBattle() {
