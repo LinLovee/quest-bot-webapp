@@ -3,392 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RuneQuestRPG v4</title>
+    <title>RuneQuestRPG v5</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #0a0a14 0%, #1a1a3f 100%);
             color: #fff;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
-            overflow-x: hidden;
         }
-        
-        .app { width: 100%; max-width: 550px; }
-        
-        .screen { display: none; }
-        .screen.active { display: block; animation: fadeIn 0.4s ease; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        @keyframes glow { 0%, 100% { box-shadow: 0 0 10px rgba(231, 76, 60, 0.5); } 50% { box-shadow: 0 0 20px rgba(231, 76, 60, 0.8); } }
-        
+        .container { max-width: 600px; margin: 0 auto; }
         .card {
             background: rgba(15, 15, 35, 0.95);
             border: 2px solid #e74c3c;
             border-radius: 15px;
             padding: 25px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-        }
-        
-        h1 {
-            text-align: center;
-            font-size: 2.8em;
             margin-bottom: 20px;
-            background: linear-gradient(45deg, #f39c12, #e74c3c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: slideUp 0.5s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
         }
-        
-        h2 {
-            font-size: 1.6em;
-            margin-bottom: 15px;
-            color: #f39c12;
-            border-bottom: 2px solid #e74c3c;
-            padding-bottom: 10px;
-        }
-        
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        h1 { font-size: 2.8em; text-align: center; color: #f39c12; margin-bottom: 20px; }
+        h2 { font-size: 1.6em; color: #f39c12; border-bottom: 2px solid #e74c3c; padding-bottom: 10px; margin-bottom: 15px; }
+        h3 { color: #3498db; margin-top: 15px; margin-bottom: 10px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-        
-        .btn-class {
-            background: rgba(50, 50, 100, 0.7);
-            border: 2px solid rgba(100, 100, 150, 0.6);
-            border-radius: 12px;
-            padding: 18px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s ease;
-            color: #fff;
-        }
-        
-        .btn-class:hover {
-            border-color: #e74c3c;
-            transform: translateY(-8px);
-            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.4);
-            background: rgba(50, 50, 120, 0.9);
-        }
-        
-        .emoji { font-size: 2.8em; margin-bottom: 10px; animation: pulse 2s infinite; }
-        
-        .stat {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding: 10px;
-            background: rgba(50, 50, 80, 0.6);
-            border-radius: 8px;
-            border-left: 3px solid #e74c3c;
-        }
-        
+        .btn-class { background: rgba(50, 50, 100, 0.7); border: 2px solid #555; border-radius: 12px; padding: 18px; cursor: pointer; text-align: center; transition: all 0.3s; color: #fff; }
+        .btn-class:hover { border-color: #e74c3c; transform: translateY(-5px); box-shadow: 0 10px 25px rgba(231, 76, 60, 0.4); }
+        .stat { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 10px; background: rgba(50, 50, 80, 0.6); border-radius: 8px; border-left: 3px solid #e74c3c; }
         .stat-label { color: #aaa; font-weight: bold; }
-        .stat-value { color: #f39c12; font-weight: bold; font-size: 1.1em; }
-        
-        .bar {
-            width: 100%;
-            height: 22px;
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 11px;
-            overflow: hidden;
-            margin-top: 5px;
-            border: 1px solid #555;
-        }
-        
-        .bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #e74c3c, #e67e22);
-            transition: width 0.3s ease;
-            border-radius: 11px;
-        }
-        
-        .bar-fill.mana { background: linear-gradient(90deg, #3498db, #2980b9); }
-        
-        .buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        
-        button {
-            flex: 1;
-            min-width: 100px;
-            padding: 14px 20px;
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            border: 2px solid #e74c3c;
-            border-radius: 8px;
-            color: #fff;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            font-size: 1em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        button:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.6);
-            background: linear-gradient(135deg, #ff6b5b, #d63223);
-        }
-        
+        .stat-value { color: #f39c12; font-weight: bold; }
+        .bar { width: 100%; height: 22px; background: rgba(0, 0, 0, 0.6); border-radius: 11px; overflow: hidden; margin-top: 5px; border: 1px solid #555; }
+        .bar-fill { height: 100%; background: linear-gradient(90deg, #e74c3c, #e67e22); transition: width 0.3s; }
+        button { flex: 1; min-width: 100px; padding: 12px 20px; background: linear-gradient(135deg, #e74c3c, #c0392b); border: 2px solid #e74c3c; border-radius: 8px; color: #fff; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(231, 76, 60, 0.6); }
         button:disabled { opacity: 0.5; cursor: not-allowed; }
-        button:active:not(:disabled) { transform: translateY(-1px); }
-        
-        .battle-field {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin: 35px 0;
-            min-height: 180px;
-            position: relative;
-        }
-        
-        .character {
-            font-size: 4em;
-            animation: breathe 3s infinite;
-            filter: drop-shadow(0 0 10px rgba(231, 76, 60, 0.6));
-        }
-        
-        .character.shake { animation: shake 0.3s ease; }
-        
-        @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-        
-        .log {
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #555;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            min-height: 60px;
-            font-size: 0.95em;
-            color: #e67e22;
-            font-weight: bold;
-            line-height: 1.5;
-        }
-        
-        .item {
-            background: rgba(50, 50, 100, 0.7);
-            border: 2px solid rgba(100, 100, 150, 0.5);
-            border-radius: 10px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .item:hover {
-            border-color: #3498db;
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
-            background: rgba(60, 70, 130, 0.9);
-        }
-        
-        .item-emoji { font-size: 2.2em; }
-        .item-name { font-weight: bold; font-size: 0.9em; color: #f39c12; }
-        .item-price { font-size: 0.85em; color: #aaa; }
-        .item-stats { font-size: 0.8em; color: #3498db; margin-top: 2px; }
-        
-        .notification {
-            position: fixed;
-            bottom: 30px;
-            right: 20px;
-            background: #27ae60;
-            padding: 16px 24px;
-            border-radius: 10px;
-            animation: slideNotify 0.3s ease, slideOutNotify 0.3s ease 2.7s forwards;
-            z-index: 1000;
-            font-weight: bold;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-        }
-        
+        .buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #333; }
+        .tab-btn { flex: 1; padding: 12px; background: transparent; border: none; border-bottom: 3px solid transparent; color: #aaa; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        .tab-btn:hover { color: #f39c12; }
+        .tab-btn.active { color: #e74c3c; border-bottom-color: #e74c3c; background: rgba(231, 76, 60, 0.1); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .leader-item { background: rgba(50, 50, 100, 0.6); border: 1px solid #555; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .leader-rank { font-weight: bold; color: #f39c12; font-size: 1.2em; min-width: 40px; }
+        .leader-info { flex: 1; margin-left: 15px; }
+        .leader-name { color: #fff; font-weight: bold; }
+        .leader-level { color: #3498db; font-size: 0.9em; }
+        .leader-stats { color: #aaa; font-size: 0.85em; }
+        .quest-item { background: rgba(50, 50, 100, 0.6); border-left: 3px solid #3498db; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+        .quest-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .quest-name { color: #fff; font-weight: bold; }
+        .quest-reward { color: #27ae60; font-weight: bold; }
+        .quest-progress { background: rgba(0, 0, 0, 0.5); height: 15px; border-radius: 8px; overflow: hidden; }
+        .quest-progress-bar { height: 100%; background: linear-gradient(90deg, #3498db, #2980b9); transition: width 0.3s; }
+        .achievement { background: rgba(50, 50, 100, 0.6); border: 1px solid #555; border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .achievement:hover { border-color: #f39c12; transform: translateY(-3px); }
+        .achievement-emoji { font-size: 2em; margin-bottom: 5px; }
+        .achievement-name { color: #f39c12; font-weight: bold; font-size: 0.9em; }
+        .notification { position: fixed; bottom: 30px; right: 20px; background: #27ae60; padding: 16px 24px; border-radius: 10px; animation: slideNotify 0.3s, slideOutNotify 0.3s 2.7s forwards; z-index: 1000; font-weight: bold; }
         @keyframes slideNotify { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes slideOutNotify { to { transform: translateX(400px); opacity: 0; } }
-        
         .notification.error { background: #e74c3c; }
-        .notification.warning { background: #f39c12; }
-        
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #333;
-        }
-        
-        .tab-btn {
-            padding: 12px 20px;
-            background: transparent;
-            border: none;
-            border-bottom: 3px solid transparent;
-            color: #aaa;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.9em;
-        }
-        
-        .tab-btn:hover { color: #f39c12; }
-        .tab-btn.active {
-            color: #e74c3c;
-            border-bottom-color: #e74c3c;
-            background: rgba(231, 76, 60, 0.1);
-        }
-        
-        .level-up-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #f39c12, #e74c3c);
-            padding: 30px;
-            border-radius: 15px;
-            z-index: 2000;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-            animation: popupAppear 0.5s ease;
-            color: #fff;
-        }
-        
-        @keyframes popupAppear { from { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
-        
-        .equipment-slot {
-            background: rgba(50, 50, 100, 0.6);
-            border: 2px dashed #555;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 10px;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .equipment-slot:hover { border-color: #f39c12; background: rgba(60, 60, 120, 0.8); }
-        .equipment-slot.equipped { border-color: #e74c3c; background: rgba(231, 76, 60, 0.2); }
-        
-        .search-bar {
-            width: 100%;
-            padding: 12px;
-            background: rgba(50, 50, 100, 0.6);
-            border: 2px solid #555;
-            border-radius: 8px;
-            color: #fff;
-            margin-bottom: 15px;
-            font-size: 1em;
-        }
-        
-        .search-bar::placeholder { color: #999; }
-        .search-bar:focus { outline: none; border-color: #e74c3c; background: rgba(50, 50, 100, 0.9); }
-        
-        .loading { animation: pulse 1.5s infinite; }
-        
-        .skill-list {
-            background: rgba(50, 50, 100, 0.6);
-            border: 1px solid #555;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .skill-item {
-            background: rgba(40, 40, 80, 0.8);
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 8px;
-            font-size: 0.9em;
-            border-left: 3px solid #3498db;
-        }
+        .emoji { font-size: 2.5em; }
+        .battle-field { text-align: center; margin: 30px 0; }
+        .char-vs { display: flex; justify-content: space-around; align-items: center; margin: 20px 0; }
+        .character { font-size: 4em; }
+        .vs-text { color: #f39c12; font-size: 2em; font-weight: bold; }
+        input[type="text"] { width: 100%; padding: 10px; background: rgba(50, 50, 100, 0.6); border: 1px solid #555; color: #fff; border-radius: 5px; margin-bottom: 15px; }
+        input[type="text"]::placeholder { color: #999; }
+        .log { background: rgba(0, 0, 0, 0.8); border: 1px solid #555; padding: 12px; border-radius: 8px; margin-bottom: 15px; color: #e67e22; font-weight: bold; min-height: 40px; }
     </style>
 </head>
 <body>
-    <div class="app">
-        <div class="card">
-            <h1>⚔️RPG</h1>
-
-            <!-- CLASS SELECTION -->
-            <div class="screen active" id="classScreen">
+    <div class="container">
+        <!-- CLASS SELECTION -->
+        <div class="screen active" id="classScreen">
+            <div class="card">
+                <h1>⚔️ RPG</h1>
                 <h2>Choose Your Class</h2>
+                <input type="text" id="usernameInput" placeholder="Enter your name...">
                 <div class="grid" id="classGrid"></div>
             </div>
+        </div>
 
-            <!-- MAIN MENU -->
-            <div class="screen" id="menuScreen">
+        <!-- MAIN MENU -->
+        <div class="screen" id="menuScreen">
+            <div class="card">
+                <h1>⚔️ RPG</h1>
                 <div id="profileDiv"></div>
                 <div class="tabs">
-                    <button class="tab-btn active" onclick="switchTab('battle')">⚔️ Battle</button>
-                    <button class="tab-btn" onclick="switchTab('shop')">🛍️ Shop</button>
-                    <button class="tab-btn" onclick="switchTab('equipment')">🛡️ Equipment</button>
-                    <button class="tab-btn" onclick="switchTab('stats')">📊 Stats</button>
+                    <button class="tab-btn active" onclick="switchTab('battle')">Battle</button>
+                    <button class="tab-btn" onclick="switchTab('shop')">Shop</button>
+                    <button class="tab-btn" onclick="switchTab('quests')">Quests</button>
+                    <button class="tab-btn" onclick="switchTab('leaderboard')">Rank</button>
+                    <button class="tab-btn" onclick="switchTab('achievements')">Awards</button>
                 </div>
-                <div id="battleTab">
+
+                <div class="tab-content active" id="battleTab">
                     <div class="buttons">
-                        <button onclick="startBattle()">Hunt Enemy</button>
-                        <button onclick="showLeaderboard()">Leaderboard</button>
-                        <button onclick="reset()">Reset Game</button>
+                        <button onclick="startBattle()">Hunt</button>
+                        <button onclick="reset()">Reset</button>
                     </div>
                 </div>
-                <div id="shopTab" style="display:none;">
-                    <input type="text" class="search-bar" id="shopSearch" placeholder="Search items..." onkeyup="filterShop()">
+
+                <div class="tab-content" id="shopTab">
+                    <input type="text" id="shopSearch" placeholder="Search items..." onkeyup="filterShop()">
                     <div id="shopGrid"></div>
                 </div>
-                <div id="equipmentTab" style="display:none;">
-                    <div id="equipmentDiv"></div>
+
+                <div class="tab-content" id="questsTab">
+                    <div id="questsDiv"></div>
                 </div>
-                <div id="statsTab" style="display:none;">
-                    <div id="statsDiv"></div>
+
+                <div class="tab-content" id="leaderboardTab">
+                    <div id="leaderboardDiv"></div>
+                </div>
+
+                <div class="tab-content" id="achievementsTab">
+                    <div id="achievementsDiv"></div>
                 </div>
             </div>
+        </div>
 
-            <!-- BATTLE -->
-            <div class="screen" id="battleScreen">
-                <h2>⚔️ Battle</h2>
-                <div class="battle-field">
-                    <div>
-                        <div class="character" id="playerEmoji">🗡️</div>
-                        <small>Your Character</small>
-                    </div>
-                    <div style="color: #f39c12; font-size: 2em; animation: pulse 1.5s infinite;">VS</div>
-                    <div>
-                        <div class="character" id="enemyEmoji">👹</div>
-                        <small id="enemyName">Enemy</small>
-                    </div>
+        <!-- BATTLE -->
+        <div class="screen" id="battleScreen">
+            <div class="card">
+                <h1>⚔️ Battle</h1>
+                <div class="char-vs">
+                    <div><div class="character" id="playerEmoji">🗡️</div><small>You</small></div>
+                    <div class="vs-text">VS</div>
+                    <div><div class="character" id="enemyEmoji">👹</div><small id="enemyName">Enemy</small></div>
                 </div>
                 <div class="log" id="battleLog">Battle started!</div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
-                    <div>
-                        <small style="color: #aaa;">YOUR HP</small>
-                        <div class="bar"><div class="bar-fill" id="playerHPBar" style="width: 100%;"></div></div>
-                        <small id="playerHPText">HP</small>
-                    </div>
-                    <div>
-                        <small style="color: #aaa;">ENEMY HP</small>
-                        <div class="bar"><div class="bar-fill" id="enemyHPBar" style="width: 100%; background: linear-gradient(90deg, #3498db, #2980b9);"></div></div>
-                        <small id="enemyHPText">HP</small>
-                    </div>
+                    <div><small>Your HP</small><div class="bar"><div class="bar-fill" id="playerHPBar" style="width: 100%;"></div></div></div>
+                    <div><small>Enemy HP</small><div class="bar"><div class="bar-fill" id="enemyHPBar" style="width: 100%; background: linear-gradient(90deg, #3498db, #2980b9);"></div></div></div>
                 </div>
                 <div class="buttons">
-                    <button onclick="attack()">⚔️ Attack</button>
-                    <button id="skillBtn" onclick="skill()">✨ Skill</button>
-                    <button onclick="usePotion()">🧪 Potion</button>
-                    <button onclick="flee()">🏃 Flee</button>
+                    <button onclick="attack()">Attack</button>
+                    <button onclick="skill()">Skill</button>
+                    <button onclick="flee()">Flee</button>
                 </div>
             </div>
         </div>
@@ -398,15 +155,18 @@
         const API = '';
         let game = {
             user_id: null,
+            username: '',
             player: null,
             enemy: null,
             battle_enemy: null,
-            battle_start_time: null,
+            battle_start: 0,
             damage_dealt: 0,
             damage_taken: 0
         };
 
         let allItems = {};
+        let dailyQuests = {};
+        let achievements = {};
 
         async function loadClasses() {
             const res = await fetch(API + '/api/classes');
@@ -416,53 +176,58 @@
             for (const [key, cls] of Object.entries(classes)) {
                 const div = document.createElement('div');
                 div.className = 'btn-class';
-                div.innerHTML = `
-                    <div class="emoji">${cls.emoji}</div>
-                    <strong>${cls.name}</strong><br>
-                    <small>${cls.description}</small><br>
-                    <small style="color: #aaa; margin-top: 8px;">❤️ ${cls.health} | ⚔️ ${cls.attack}</small>
-                `;
+                div.innerHTML = `<div class="emoji">${cls.emoji}</div><strong>${cls.name}</strong><br><small>${cls.description}</small>`;
                 div.onclick = () => createPlayer(key);
                 grid.appendChild(div);
             }
         }
 
         async function createPlayer(classType) {
+            const username = document.getElementById('usernameInput').value.trim() || `Player_${Date.now()}`;
             game.user_id = Date.now();
+            game.username = username;
+
             const res = await fetch(API + '/api/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_id: game.user_id, class: classType })
+                body: JSON.stringify({ user_id: game.user_id, class: classType, username: username })
             });
-            if (!res.ok) { notify('Failed to create character!', 'error'); return; }
+            if (!res.ok) { notify('Failed!', 'error'); return; }
+
             const data = await res.json();
             game.player = data.player;
+            await loadData();
             showScreen('menuScreen');
             updateProfile();
-            loadItems();
         }
 
-        async function loadItems() {
-            const res = await fetch(API + '/api/items');
-            allItems = await res.json();
+        async function loadData() {
+            const itemsRes = await fetch(API + '/api/items');
+            allItems = await itemsRes.json();
+            
+            const questsRes = await fetch(API + '/api/daily-quests');
+            dailyQuests = await questsRes.json();
+            
+            const achievRes = await fetch(API + '/api/achievements');
+            achievements = await achievRes.json();
         }
 
         function updateProfile() {
-            if (!game.player) return;
             const p = game.player;
             const hpPercent = (p.health / p.max_health) * 100;
             const manaPercent = (p.mana / p.max_mana) * 100;
             const expPercent = (p.exp / (150 * p.level)) * 100;
             
             document.getElementById('profileDiv').innerHTML = `
-                <div class="stat"><span class="stat-label">⭐ Level</span><span class="stat-value">${p.level}</span></div>
-                <div class="stat"><span class="stat-label">❤️ Health</span><span class="stat-value">${p.health}/${p.max_health}</span></div>
+                <h2>${p.username} - ${p.class_type.toUpperCase()}</h2>
+                <div class="stat"><span>Level</span><span>${p.level}</span></div>
                 <div class="bar"><div class="bar-fill" style="width: ${hpPercent}%;"></div></div>
-                <div class="stat"><span class="stat-label">💎 Mana</span><span class="stat-value">${p.mana}/${p.max_mana}</span></div>
-                <div class="bar"><div class="bar-fill mana" style="width: ${manaPercent}%;"></div></div>
-                <div class="stat"><span class="stat-label">📈 EXP</span><span class="stat-value">${p.exp}/${150 * p.level}</span></div>
-                <div class="bar"><div class="bar-fill" style="width: ${expPercent}%; background: linear-gradient(90deg, #27ae60, #16a085);"></div></div>
-                <div class="stat"><span class="stat-label">💰 Gold</span><span class="stat-value">${p.gold}</span></div>
+                <div class="stat"><span>HP</span><span>${p.health}/${p.max_health}</span></div>
+                <div class="bar"><div class="bar-fill" style="width: ${manaPercent}%; background: #3498db;"></div></div>
+                <div class="stat"><span>Mana</span><span>${p.mana}/${p.max_mana}</span></div>
+                <div class="bar"><div class="bar-fill" style="width: ${expPercent}%; background: #27ae60;"></div></div>
+                <div class="stat"><span>EXP</span><span>${p.exp}/${150 * p.level}</span></div>
+                <div class="stat"><span>Gold</span><span>💰 ${p.gold}</span></div>
             `;
         }
 
@@ -472,7 +237,7 @@
             
             for (const [category, items] of Object.entries(allItems)) {
                 const categoryDiv = document.createElement('div');
-                categoryDiv.innerHTML = `<h3 style="color: #f39c12; margin: 15px 0 10px 0;">${category.toUpperCase()}</h3>`;
+                categoryDiv.innerHTML = `<h3>${category}</h3>`;
                 grid.appendChild(categoryDiv);
                 
                 const itemsGrid = document.createElement('div');
@@ -483,38 +248,26 @@
                 
                 items.forEach(item => {
                     const div = document.createElement('div');
-                    div.className = 'item';
-                    let stats = '';
-                    if (item.attack) stats += `⚔️ +${item.attack} `;
-                    if (item.defense) stats += `🛡️ +${item.defense} `;
-                    if (item.crit) stats += `💥 +${item.crit}% `;
-                    if (item.heal) stats += `❤️ ${item.heal} `;
-                    
-                    div.innerHTML = `
-                        <div class="item-emoji">${item.emoji}</div>
-                        <div class="item-name">${item.name}</div>
-                        <div class="item-stats">${stats}</div>
-                        <div class="item-price">💰 ${item.price}</div>
-                    `;
+                    div.style.background = 'rgba(50, 50, 100, 0.6)';
+                    div.style.border = '1px solid #555';
+                    div.style.borderRadius = '8px';
+                    div.style.padding = '10px';
+                    div.style.textAlign = 'center';
+                    div.style.cursor = 'pointer';
+                    div.style.transition = 'all 0.3s';
+                    div.innerHTML = `<div style="font-size: 2em;">${item.emoji}</div><strong>${item.name}</strong><br><small>💰 ${item.price}</small>`;
                     div.onclick = () => buyItem(item);
+                    div.onmouseover = () => div.style.transform = 'translateY(-5px)';
+                    div.onmouseout = () => div.style.transform = 'translateY(0)';
                     itemsGrid.appendChild(div);
                 });
                 grid.appendChild(itemsGrid);
             }
         }
 
-        function filterShop() {
-            const search = document.getElementById('shopSearch').value.toLowerCase();
-            const items = document.querySelectorAll('.item');
-            items.forEach(item => {
-                const name = item.querySelector('.item-name').textContent.toLowerCase();
-                item.style.display = name.includes(search) ? 'flex' : 'none';
-            });
-        }
-
         async function buyItem(item) {
             if (game.player.level < item.level_req) {
-                notify(`Need level ${item.level_req}!`, 'warning');
+                notify(`Need level ${item.level_req}!`, 'error');
                 return;
             }
             if (game.player.gold < item.price) {
@@ -531,130 +284,117 @@
             if (res.ok) {
                 const data = await res.json();
                 game.player.gold = data.gold;
-                game.player.inventory[item.id] = (game.player.inventory[item.id] || 0) + 1;
                 updateProfile();
-                notify(`✅ Bought ${item.name}!`);
-            } else {
-                notify('Purchase failed!', 'error');
+                notify(`Bought ${item.name}!`);
             }
+        }
+
+        async function loadLeaderboard() {
+            const res = await fetch(API + '/api/leaderboard');
+            const leaders = await res.json();
+            const div = document.getElementById('leaderboardDiv');
+            div.innerHTML = '';
+            
+            leaders.forEach((leader, idx) => {
+                const item = document.createElement('div');
+                item.className = 'leader-item';
+                item.innerHTML = `
+                    <div class="leader-rank">#${idx + 1}</div>
+                    <div class="leader-info">
+                        <div class="leader-name">${leader.username || `Player_${leader.user_id}`}</div>
+                        <div class="leader-level">Lvl ${leader.level} ${leader.class_type}</div>
+                        <div class="leader-stats">Kills: ${leader.kills} | Battles: ${leader.battles_won}</div>
+                    </div>
+                    <div style="text-align: right; color: #f39c12;">💰 ${leader.gold}</div>
+                `;
+                div.appendChild(item);
+            });
+        }
+
+        async function loadQuests() {
+            const div = document.getElementById('questsDiv');
+            const playerQuests = game.player.daily_quests;
+            div.innerHTML = '';
+            
+            for (const [questId, quest] of Object.entries(dailyQuests)) {
+                const playerQuest = playerQuests[questId] || {progress: 0, completed: false};
+                const progress = playerQuest.progress || 0;
+                const target = quest.target;
+                const percent = Math.min(100, (progress / target) * 100);
+                
+                const questDiv = document.createElement('div');
+                questDiv.className = 'quest-item';
+                questDiv.innerHTML = `
+                    <div class="quest-header">
+                        <span class="quest-name">${quest.emoji} ${quest.name}</span>
+                        <span class="quest-reward">${playerQuest.completed ? '✓ Done' : `+${quest.reward} gold`}</span>
+                    </div>
+                    <div>${progress}/${target}</div>
+                    <div class="quest-progress">
+                        <div class="quest-progress-bar" style="width: ${percent}%;"></div>
+                    </div>
+                `;
+                div.appendChild(questDiv);
+            }
+        }
+
+        async function loadAchievements() {
+            const div = document.getElementById('achievementsDiv');
+            div.innerHTML = '';
+            
+            const grid = document.createElement('div');
+            grid.className = 'grid-3';
+            
+            for (const [achId, ach] of Object.entries(achievements)) {
+                const achieved = game.player.achievements[achId] || false;
+                const item = document.createElement('div');
+                item.className = 'achievement';
+                item.style.opacity = achieved ? '1' : '0.5';
+                item.innerHTML = `
+                    <div class="achievement-emoji">${ach.emoji}</div>
+                    <div class="achievement-name">${ach.name}</div>
+                    <small>${ach.points} pts</small>
+                `;
+                item.title = ach.description;
+                grid.appendChild(item);
+            }
+            div.appendChild(grid);
         }
 
         function switchTab(tab) {
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
             
-            document.getElementById('battleTab').style.display = 'none';
-            document.getElementById('shopTab').style.display = 'none';
-            document.getElementById('equipmentTab').style.display = 'none';
-            document.getElementById('statsTab').style.display = 'none';
-            
-            if (tab === 'shop') {
-                document.getElementById('shopTab').style.display = 'block';
+            if (tab === 'battle') {
+                document.getElementById('battleTab').classList.add('active');
+            } else if (tab === 'shop') {
+                document.getElementById('shopTab').classList.add('active');
                 loadShop();
-            } else if (tab === 'battle') {
-                document.getElementById('battleTab').style.display = 'block';
-            } else if (tab === 'equipment') {
-                document.getElementById('equipmentTab').style.display = 'block';
-                updateEquipment();
-            } else if (tab === 'stats') {
-                document.getElementById('statsTab').style.display = 'block';
-                updateStats();
+            } else if (tab === 'quests') {
+                document.getElementById('questsTab').classList.add('active');
+                loadQuests();
+            } else if (tab === 'leaderboard') {
+                document.getElementById('leaderboardTab').classList.add('active');
+                loadLeaderboard();
+            } else if (tab === 'achievements') {
+                document.getElementById('achievementsTab').classList.add('active');
+                loadAchievements();
             }
         }
 
-        function updateEquipment() {
-            const div = document.getElementById('equipmentDiv');
-            div.innerHTML = `
-                <div class="equipment-slot">
-                    <strong>⚔️ WEAPON</strong>
-                    <small id="weaponEquipped">No weapon equipped</small>
-                </div>
-                <div class="equipment-slot">
-                    <strong>🛡️ ARMOR</strong>
-                    <small id="armorEquipped">No armor equipped</small>
-                </div>
-                <div class="equipment-slot">
-                    <strong>💍 ACCESSORY</strong>
-                    <small id="accessoryEquipped">No accessory equipped</small>
-                </div>
-                <h3 style="color: #f39c12; margin-top: 20px;">Your Inventory</h3>
-                <div id="inventoryDiv"></div>
-            `;
-            
-            // Display equipped items
-            if (game.player.equipment.weapon) {
-                document.getElementById('weaponEquipped').textContent = 'Equipped';
-            }
-            if (game.player.equipment.armor) {
-                document.getElementById('armorEquipped').textContent = 'Equipped';
-            }
-            if (game.player.equipment.accessory) {
-                document.getElementById('accessoryEquipped').textContent = 'Equipped';
-            }
-            
-            // Display inventory items
-            const inv = document.getElementById('inventoryDiv');
-            inv.innerHTML = '';
-            for (const [itemId, count] of Object.entries(game.player.inventory)) {
-                if (count > 0) {
-                    let item = null;
-                    for (const category of Object.values(allItems)) {
-                        const found = category.find(i => i.id === itemId);
-                        if (found) { item = found; break; }
-                    }
-                    if (item) {
-                        const div = document.createElement('div');
-                        div.className = 'item';
-                        div.innerHTML = `
-                            <div class="item-emoji">${item.emoji}</div>
-                            <div class="item-name">${item.name}</div>
-                            <div class="item-stats">x${count}</div>
-                        `;
-                        div.onclick = () => equipItem(item.id);
-                        inv.appendChild(div);
-                    }
-                }
-            }
-        }
-
-        async function equipItem(itemId) {
-            const res = await fetch(API + '/api/equip-item', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_id: game.user_id, item_id: itemId })
-            });
-            
-            if (res.ok) {
-                const data = await res.json();
-                notify(data.message);
-                updateEquipment();
-            }
-        }
-
-        function updateStats() {
-            const p = game.player;
-            const div = document.getElementById('statsDiv');
-            div.innerHTML = `
-                <div class="stat"><span class="stat-label">⚔️ Attack</span><span class="stat-value">${p.attack}</span></div>
-                <div class="stat"><span class="stat-label">🛡️ Defense</span><span class="stat-value">${p.defense}</span></div>
-                <div class="stat"><span class="stat-label">💥 Crit Chance</span><span class="stat-value">${p.crit_chance.toFixed(1)}%</span></div>
-                <div class="stat"><span class="stat-label">🎯 Dodge Chance</span><span class="stat-value">${p.dodge_chance.toFixed(1)}%</span></div>
-                <div class="stat"><span class="stat-label">💢 Crit Damage</span><span class="stat-value">${(p.crit_damage * 100).toFixed(0)}%</span></div>
-                <div class="stat"><span class="stat-label">⚔️ Battles Won</span><span class="stat-value">${p.battles_won}</span></div>
-                <div class="stat"><span class="stat-label">💀 Total Kills</span><span class="stat-value">${p.kills}</span></div>
-                <div class="stat"><span class="stat-label">💢 Damage Dealt</span><span class="stat-value">${p.damage_dealt}</span></div>
-            `;
+        function filterShop() {
+            const search = document.getElementById('shopSearch').value.toLowerCase();
+            const items = document.querySelectorAll('[style*="background: rgba(50"]');
         }
 
         async function startBattle() {
             const res = await fetch(API + '/api/enemies');
             const enemies = await res.json();
             const keys = Object.keys(enemies);
-            const randomIndex = Math.floor(Math.random() * keys.length);
-            game.battle_enemy = enemies[keys[randomIndex]];
+            game.battle_enemy = enemies[keys[Math.floor(Math.random() * keys.length)]];
             game.enemy = { health: game.battle_enemy.hp, max_health: game.battle_enemy.hp };
-            game.battle_start_time = Date.now();
+            game.battle_start = Date.now();
             game.damage_dealt = 0;
             game.damage_taken = 0;
             showScreen('battleScreen');
@@ -666,8 +406,6 @@
             const eHpPercent = Math.max(0, (game.enemy.health / game.enemy.max_health) * 100);
             document.getElementById('playerHPBar').style.width = hpPercent + '%';
             document.getElementById('enemyHPBar').style.width = eHpPercent + '%';
-            document.getElementById('playerHPText').textContent = `${game.player.health}/${game.player.max_health}`;
-            document.getElementById('enemyHPText').textContent = `${game.enemy.health}/${game.enemy.max_health}`;
             document.getElementById('enemyEmoji').textContent = game.battle_enemy.emoji;
             document.getElementById('enemyName').textContent = game.battle_enemy.name;
         }
@@ -682,35 +420,18 @@
             const damage = data.damage;
             game.damage_dealt += damage;
             game.enemy.health -= damage;
-            game.player.mana = data.mana;
             
-            const isCrit = data.is_crit ? '💥 CRITICAL!' : '';
-            document.getElementById('battleLog').textContent = `You dealt ${damage} damage! ${isCrit}`;
-            document.getElementById('playerEmoji').classList.add('shake');
-            setTimeout(() => document.getElementById('playerEmoji').classList.remove('shake'), 300);
-            
+            const isCrit = data.is_crit ? ' 💥 CRITICAL!' : '';
+            document.getElementById('battleLog').textContent = `You dealt ${damage} damage!${isCrit}`;
             updateBattle();
-            if (game.enemy.health <= 0) { endBattle(true); } else { setTimeout(enemyAttack, 1000); }
+            
+            if (game.enemy.health <= 0) { endBattle(true); } else { setTimeout(enemyAttack, 800); }
         }
 
         async function skill() {
-            const res = await fetch(API + '/api/attack', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_id: game.user_id, is_skill: true, skill_name: 'power_strike' })
-            });
-            if (!res.ok) { const data = await res.json(); notify(data.error, 'error'); return; }
-            const data = await res.json();
-            const damage = data.damage;
-            game.damage_dealt += damage;
-            game.enemy.health -= damage;
-            game.player.mana = data.mana;
-            document.getElementById('battleLog').textContent = `✨ SKILL ACTIVATED! ${damage} damage!`;
-            document.getElementById('playerEmoji').classList.add('shake');
-            setTimeout(() => document.getElementById('playerEmoji').classList.remove('shake'), 300);
-            
-            updateBattle();
-            if (game.enemy.health <= 0) { endBattle(true); } else { setTimeout(enemyAttack, 1000); }
+            document.getElementById('battleLog').textContent = 'Using skill...';
+            await new Promise(r => setTimeout(r, 500));
+            await attack();
         }
 
         function enemyAttack() {
@@ -718,38 +439,23 @@
             const dmg = Math.max(1, game.battle_enemy.damage - game.player.defense / 2);
             game.damage_taken += dmg;
             game.player.health -= dmg;
-            document.getElementById('battleLog').textContent = `${game.battle_enemy.name} attacks! ${dmg} damage!`;
-            document.getElementById('enemyEmoji').classList.add('shake');
-            setTimeout(() => document.getElementById('enemyEmoji').classList.remove('shake'), 300);
-            
+            document.getElementById('battleLog').textContent = `${game.battle_enemy.name} deals ${dmg} damage!`;
             updateBattle();
             if (game.player.health <= 0) { endBattle(false); }
         }
 
-        function usePotion() {
-            if (game.player.health >= game.player.max_health) {
-                notify('Already at full health!', 'warning');
-                return;
-            }
-            const heal = 50;
-            game.player.health = Math.min(game.player.max_health, game.player.health + heal);
-            document.getElementById('battleLog').textContent = `Used potion! Healed ${heal} HP`;
-            updateBattle();
-            setTimeout(enemyAttack, 1000);
-        }
-
         function flee() {
             if (Math.random() > 0.3) {
-                document.getElementById('battleLog').textContent = '🏃 Escaped successfully!';
+                document.getElementById('battleLog').textContent = 'Escaped!';
                 setTimeout(() => { showScreen('menuScreen'); updateProfile(); }, 1500);
             } else {
-                document.getElementById('battleLog').textContent = '❌ Could not escape!';
+                document.getElementById('battleLog').textContent = 'Cannot escape!';
                 setTimeout(enemyAttack, 500);
             }
         }
 
         async function endBattle(won) {
-            const duration = Math.floor((Date.now() - game.battle_start_time) / 1000);
+            const duration = Math.floor((Date.now() - game.battle_start) / 1000);
             const res = await fetch(API + '/api/battle-end', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -764,44 +470,18 @@
                     duration: duration
                 })
             });
+            
             const data = await res.json();
-            
-            const playerRes = await fetch(API + `/api/player?user_id=${game.user_id}`);
-            game.player = await playerRes.json();
-            
-            if (won) {
-                notify(`🎉 Victory! +${game.battle_enemy.gold} gold!`);
-                if (data.level_up) {
-                    showLevelUpPopup(data.level_info);
+            if (res.ok) {
+                game.player = data.player;
+                if (won) {
+                    notify(`Victory! +${game.battle_enemy.gold} gold!`);
+                } else {
+                    notify('Defeated...', 'error');
                 }
-            } else {
-                notify('💀 Defeated...', 'error');
             }
             
-            setTimeout(() => { showScreen('menuScreen'); updateProfile(); }, 2500);
-        }
-
-        function showLevelUpPopup(info) {
-            const popup = document.createElement('div');
-            popup.className = 'level-up-popup';
-            popup.innerHTML = `
-                <h2>⭐ LEVEL UP!</h2>
-                <p style="font-size: 1.5em; margin: 10px 0;">Level ${info.new_level}</p>
-                <p>+${info.health_increase} HP</p>
-                <p>+${info.attack_increase} ATK</p>
-            `;
-            document.body.appendChild(popup);
-            setTimeout(() => popup.remove(), 3000);
-        }
-
-        async function showLeaderboard() {
-            const res = await fetch(API + '/api/leaderboard');
-            const leaders = await res.json();
-            let html = '<h2>🏆 Leaderboard</h2>';
-            leaders.forEach((leader, index) => {
-                html += `<div class="stat"><span>${index + 1}. Player ${leader.user_id}</span><span>Lvl ${leader.level}</span></div>`;
-            });
-            notify('Check top players');
+            setTimeout(() => { showScreen('menuScreen'); updateProfile(); }, 2000);
         }
 
         function showScreen(id) {
@@ -818,7 +498,7 @@
         }
 
         function reset() {
-            if (confirm('Reset your character?')) {
+            if (confirm('Reset game?')) {
                 game = { user_id: null, player: null, enemy: null, battle_enemy: null };
                 showScreen('classScreen');
                 loadClasses();
@@ -826,6 +506,7 @@
         }
 
         loadClasses();
+        loadData();
     </script>
 </body>
 </html>
